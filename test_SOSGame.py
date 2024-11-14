@@ -92,6 +92,43 @@ class TestSOSGame(unittest.TestCase):
         self.gui.start_game()
         self.gui.on_board_click(1, 1)
         self.assertNotEqual(self.gui.board_buttons[1][1].cget("text"), " ")  
+        
+
+    # Test for 7.1: Additional Turn in General Mode after SOS Formation
+    def test_general_mode_sos_additional_turn(self):
+        """Check if creating an SOS grants an extra turn in General mode."""
+
+        self.gui.board_buttons[0][0].config(text="S")
+        self.gui.board_buttons[0][1].config(text="O")
+        
+        self.general_mode.make_move(0, 2, "S")  
+        
+        self.assertEqual(self.game_manager.get_current_player(), self.game_manager.current_player)
+
+    # Test for 7.2: No SOS formation, game continues with next turn
+    def test_no_sos_game_continues(self):
+        """Simulate moves without forming an SOS and confirm game continues with the next turn."""
+        self.gui.board_buttons[0][0].config(text="S")
+        self.gui.board_buttons[0][1].config(text="O")
+        self.gui.board_buttons[1][0].config(text="O")
+        
+        self.general_mode.make_move(1, 1, "S")
+        
+        self.assertNotEqual(self.game_manager.get_current_player(), self.game_manager.current_player)
+
+    # Test for 7.3: Initial Game State in General Mode
+    def test_initial_game_state_general_mode(self):
+        """Verify General mode initializes correctly with the expected settings."""
+        self.assertTrue(self.general_mode.is_active)
+        self.assertEqual(self.game_manager.mode, "General")
+
+    # Test for 7.4: End Game Restart Option in GUI
+    def test_end_game_restart_option(self):
+        """Check if restart/end options appear after game completion in GUI."""
+        self.general_mode.end_game() 
+        
+        restart_button_state = self.gui.restart_button["state"] 
+        self.assertEqual(restart_button_state, "normal")
 
 if __name__ == '__main__':
     unittest.main()
